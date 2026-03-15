@@ -99,7 +99,7 @@ export const listTools = [
 ];
 
 import Proyek1 from "/assets/proyek/diabetes.png";
-import Proyek2 from "/assets/proyek/proyek2.webp";
+import Proyek2 from "/assets/proyek/Kene1.png";
 import Proyek3 from "/assets/proyek/proyek3.webp";
 import Proyek4 from "/assets/proyek/proyek4.webp";
 import Proyek5 from "/assets/proyek/proyek5.webp";
@@ -115,14 +115,15 @@ export const listProyek = [
     dad: "200",
     link: "https://www.linkedin.com/posts/rafakrn_diabetes-prediction-activity-7399024099307470850-3oBe?utm_source=share&utm_medium=member_desktop&rcm=ACoAAFGXNdwBiKK4tfndHyeSkZAf6cjMrn_eiUs"
   },
-  // {
-  //   id: 2,
-  //   gambar: Proyek2,
-  //   nama: "Company Profile",
-  //   desk: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis, laborum!",
-  //   tools: ["HTML", "CSS", "Javascript", "AOS", "Swiper", "Lightbox Gallery"],
-  //   dad: "300",
-  // },
+  {
+    id: 2,
+    gambar: Proyek2,
+    nama: "Company Profile",
+    desk: "Membangun Company Profile Salah Satu Konveksi Di Semarang",
+    tools: ["Next.js", "Tailwind","Vercell"],
+    dad: "200",
+    link:"https://kenevendor-project.vercel.app/"
+  },
   // {
   //   id: 3,
   //   gambar: Proyek3,
