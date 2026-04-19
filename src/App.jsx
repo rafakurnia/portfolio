@@ -1,30 +1,77 @@
 import DataImage from "./data";
-import {listTools,listProyek} from "./data"
+import { useState, useEffect } from 'react';
+import { listTools, listProyek } from "./data";
+import Aurora from "./components/Aurora";
+import Footer from './components/Footer';
+
+
+
+function useTyping(texts, speed = 80, pause = 1500) {
+  const [displayed, setDisplayed] = useState('');
+  const [textIndex, setTextIndex] = useState(0);
+  const [charIndex, setCharIndex] = useState(0);
+  const [deleting, setDeleting] = useState(false);
+
+  useEffect(() => {
+    const current = texts[textIndex];
+    let timeout;
+
+    if (!deleting && charIndex < current.length) {
+      timeout = setTimeout(() => setCharIndex(i => i + 1), speed);
+    } else if (!deleting && charIndex === current.length) {
+      timeout = setTimeout(() => setDeleting(true), pause);
+    } else if (deleting && charIndex > 0) {
+      timeout = setTimeout(() => setCharIndex(i => i - 1), speed / 2);
+    } else {
+      setDeleting(false);
+      setTextIndex(i => (i + 1) % texts.length);
+    }
+
+    setDisplayed(current.slice(0, charIndex));
+    return () => clearTimeout(timeout);
+  }, [charIndex, deleting, textIndex, texts, speed, pause]);
+
+  return displayed;
+}
+
 
 function App() {
-
+  const typedText = useTyping([
+    'Data Enthusiast',
+    'Machine Learning Learner', 
+    'Mahasiswa Sistem Informasi',
+  ]);
   return (
     <>
-    <div className="hero grid md:grid-cols-2 items-center pt-10 xl:gap-0 gap-6 grid-cols-1">
+          {/* Aurora Background */}
+    <div style={{ position: 'fixed', inset: 0, zIndex: -1 }}>
+        <Aurora
+          colorStops={["#79dc68", "#fefefe", "#1e0096"]}
+          blend={0.5}
+          amplitude={1.0}
+          speed={1}
+        />
+    </div>
+    <div className="hero min-h-screen flex flex-col items-center justify-center text-center px-4 " id="Home">
       <div className="animate__animated animate__fadeInUp">
-        <div className="flex items-center gap-3 mb-6 bg-zinc-800 w-fit p-4 rounded-2xl">
-          <img src={DataImage.HeroImage} alt="Hero Image"className="w-10 rounded-md" loading="lazy" />
-          <q>Tetap berproses meskipun satu persen sehari.</q>
-        </div>
-        <h1 className="text-5xl/tight font-bold mb-6">Hi, Saya Muhammad Rafa Kurnia</h1>
-        <p className= "text-base/loose mb-6 opacity-50">Saya seorang mahasiswa Sistem Informasi yang memiliki ketertarikan dalam bidang Data dan Machine Learning,
+
+        <h1 className="text-5xl/tight font-bold mb-4">Muhammad Rafa Kurnia</h1>
+        <h2 className="text-2xl text-violet-400 font-semibold mb-6 h-8">
+          {typedText}<span className="animate-pulse">|</span>
+        </h2>
+        <p className="text-base/loose mb-6 opacity-50 max-w-xl mx-auto">
+          Saya seorang mahasiswa Sistem Informasi yang memiliki ketertarikan dalam bidang Data dan Machine Learning,
           terutama pada pengolahan maupun pemrosesan data hingga mendapatkan sebuah insight menarik.
         </p>
-        <div className="flex items-center sm:gap-4 gap-2">
+        <div className="flex items-center justify-center sm:gap-4 gap-2">
           <a href="#" className="bg-violet-700 p-4 rounded-2xl hover:bg-violet-600">Download CV</a>
-          <a href="#" className="bg-zinc-700 p-4 rounded-2xl hover:bg-zinc-600">Lihat Proyek</a>
+          <a href="#proyek" className="bg-zinc-700 p-4 rounded-2xl hover:bg-zinc-600">Lihat Proyek</a>
         </div>
       </div>
-      <img src={DataImage.HeroImage} alt="Hero Image"className="w-[500pc] md:ml-auto  animate__animated animate__fadeInUp"loading="lazy" />
     </div>
 
     {/*Tentang*/}
-    <div className="tentang mt-32 py-10">
+    <div className="tentang mt-32 py-10" id="tentang">
        <div className="xl:w-2/3 lg:w-3/4 w-full mx-auto p-7 bg-zinc-800 rounded-lg" data-aos="fade-up" data-aos-duration="1000"> 
         <p className="text-base/loose mb-10">Hi, Perkenalkan Muhammad Rafa Kurnia, mahasiswa Sistem Informasi di Universitas Negeri Semarang yang memiliki minat kuat dalam
           data, machine learning, dan analisis data untuk menghasilkan insight bisnis yang bermakna.
@@ -67,31 +114,36 @@ function App() {
 
       </div>
     </div>
-    {/* proyek */}
-    <div className="proyek mt-32 py-10">
-      <h1 className="text-center text-4xl font-bold mb-2">Proyek</h1>
-      <p className="text-base/loose text-center opacity-50">Berikut ini proyek yang telah saya b uat.</p>
-      <div className="proyex-box mt-14 grid lg:grid-cols-3 sm:grid-cols-2 grid-cols-1  gap-4"data-aos="fade-up" data-aos-duration="1000">
-        {listProyek.map(proyek => (
-          <div className="p-4 bg-zinc-800 rounded-md" key={proyek.id}>
-            <img src={proyek.gambar} alt="Proyek Image" loading="lazy" />
-            <div>
-              <h1 className="text-2xl font-bold my-4">{proyek.nama}</h1>
-              <p className="text-base/loose mb-4">{proyek.desk}</p>
-              <div className="flex flex-wrap gap-2">
-                {proyek.tools.map((tool, index) => (
-                  <p className="py-1 px-3 border border-zinc-500 rounded-md font-semibold bg-zinc-600" key={index}>{tool}</p>
-                ))}
-              </div>
-              <div className="mt-8 text-center">
-                <a href={proyek.link} className="bg-violet-700 p-3 rounded-lg block border border-zinc-600 bg-violet-600 ">Lihat Proyek</a>
-              </div>
+  {/* proyek */}
+  <div className="proyek mt-32 py-10 " id="proyek">
+    <h1 className="text-center text-4xl font-bold mb-2">Proyek</h1>
+    <p className="text-base/loose text-center opacity-50">Berikut ini proyek yang telah saya buat.</p>
+    <div className="proyex-box mt-14 grid lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4 items-start" data-aos="fade-up" data-aos-duration="1000">
+      {listProyek.map(proyek => (
+        <div className="p-4 bg-zinc-800 rounded-md flex flex-col" key={proyek.id}>
+          <img src={proyek.gambar} alt="Proyek Image" loading="lazy" className="w-full object-cover rounded-md" />
+          <div className="flex flex-col flex-1 mt-4">
+            <h1 className="text-2xl font-bold mb-2">{proyek.nama}</h1>
+            <p className="text-base/loose mb-4 opacity-80">{proyek.desk}</p>
+            <div className="flex flex-wrap gap-2 mt-auto">
+              {proyek.tools.map((tool, index) => (
+                <p className="py-1 px-3 border border-zinc-500 rounded-md font-semibold bg-zinc-600" key={index}>{tool}</p>
+              ))}
+            </div>
+            <div className="mt-6 text-center">
+              <a href={proyek.link} className="bg-violet-600 p-3 rounded-lg block hover:bg-violet-500 transition-colors">Lihat Proyek</a>
             </div>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
+  </div>
 
+
+
+
+
+  <Footer/>
     </>
   )
 }
